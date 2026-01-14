@@ -1,17 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState,useMemo, useCallback, useRef , useEffect, useEffe} from 'react';
 
 // Contador de renders para visualizar el problema
-let renderCount = 0;
 
-const ChildComponent = ({ title, onClick, data }) => {
-  renderCount++;
+
+const ChildComponent = React.memo(({ title, onClick, data }) => {
+const renderCount = useRef(0);
+  renderCount.current++; // Sí, da warning, pero funciona
   
+
+  console.log('Child rendered');
   return (
     <div className="p-4 bg-blue-50 border-2 border-blue-300 rounded-lg">
       <div className="flex justify-between items-center mb-3">
         <h3 className="font-bold text-lg">{title}</h3>
         <span className="px-3 py-1 bg-red-500 text-white rounded-full text-sm font-bold">
-          Renders: {renderCount}
+          Renders: {renderCount.current}
         </span>
       </div>
       
@@ -32,38 +35,35 @@ const ChildComponent = ({ title, onClick, data }) => {
       </div>
     </div>
   );
-};
+});
 
 const ProblematicParent = () => {
   const [counter, setCounter] = useState(0);
   const [childMessage, setChildMessage] = useState('');
-  
 
-  const handleChildClick = () => {
+  const handleChildClick = useCallback(() => {
+    console.log('Child clicked');
     setChildMessage('¡Click desde el hijo!');
     setTimeout(() => setChildMessage(''), 2000);
-  };
-  
+  }, []); //como evitar usar set dentro de usecallback???
+  console.log('Parent rendered');
 
-  const childData = {
+  const childData = useMemo(() => ({
     id: 1,
     name: 'Componente Hijo'
-  };
+  }), []);
   
-
-  const items = [1, 2, 3, 4, 5];
   
-
-  const expensiveCalculation = () => {
+  const items = useMemo(() => [1, 2, 3, 4, 5], []);
+//TODO: AGREGUEMOS ALGUN PUSH DE UN SERVER PARA TESTEAR DYNAMIC ITEMS
+  const total = useMemo(() => {
     console.log('🔴 Calculando algo costoso...');
     let result = 0;
     for (let i = 0; i < items.length; i++) {
       result += items[i] * 2;
     }
     return result;
-  };
-
-  const total = expensiveCalculation();
+  }, [items]);
 
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-6">

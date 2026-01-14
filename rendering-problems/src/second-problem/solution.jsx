@@ -1,7 +1,15 @@
 import React, { useCallback, useState, useMemo } from 'react';
 
-const useListManager = (setItems) => { // ✅ Solo necesitas setItems
-  const handleDelete = useCallback((id) => {
+const useListManager = () => { // ✅ Solo necesitas setItems
+      const initialItems = [  
+    { id: 1, name: 'Item 1' },
+    { id: 2, name: 'Item 2' },
+    { id: 3, name: 'Item 3' },
+    { id: 4, name: 'Item 4' },
+    { id: 5, name: 'Item 5' },
+  ];
+  const [items, setItems] = useState(initialItems);
+    const handleDelete = useCallback((id) => {
     setItems(prevItems => prevItems.filter(item => item.id !== id));
   }, [setItems]);
 
@@ -13,7 +21,7 @@ const useListManager = (setItems) => { // ✅ Solo necesitas setItems
     ));
   }, [setItems]);
 
-  return { handleDelete, handleEdit };
+  return { items, handleDelete, handleEdit };
 }
 
 //Ok lets debug, first, we have a rerender due to hadneledit and handledelete, we need to avoid making renders for the reference of the funcitons, so we need to use usecallback
@@ -46,18 +54,11 @@ const ListItem = React.memo(({ item, onDelete, onEdit }) => {
 } )
 
 const SecondProblem = () => {
-    const initialItems = [  
-    { id: 1, name: 'Item 1' },
-    { id: 2, name: 'Item 2' },
-    { id: 3, name: 'Item 3' },
-    { id: 4, name: 'Item 4' },
-    { id: 5, name: 'Item 5' },
-  ];
-  const [items, setItems] = useState(initialItems);
+ const { items, handleDelete, handleEdit } = useListManager();
   const [filter, setFilter] = useState('');
   const [counter, setCounter] = useState(0);
 
-  const {  handleDelete, handleEdit } = useListManager( setItems);
+  //const {  handleDelete, handleEdit } = useListManager( setItems);
 
   const filteredItems = useMemo(() => items.filter(item => 
     item.name.toLowerCase().includes(filter.toLowerCase())

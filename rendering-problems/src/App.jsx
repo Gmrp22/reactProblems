@@ -5,6 +5,7 @@ import './App.css'
 import ProblematicParent from './first-problem/index.jsx'
 import SecondProblem from './second-problem/solution.jsx'
 import ThirdProblem from './third-problem/solution.jsx'
+import FourthProblem from './fourth-problem/solution.jsx'
 function App() {
   const [count, setCount] = useState(0)
 
@@ -12,7 +13,8 @@ function App() {
     <>
      {/* <ProblematicParent /> */}
      {/* <SecondProblem /> */}
-     <ThirdProblem/>
+     {/* <ThirdProblem/> */}
+     <FourthProblem/>
     </>
   )
 }
